@@ -1,32 +1,43 @@
 # RentFlow
 
-Sistema de gerenciamento de aluguel de veículos desenvolvido em Java com arquitetura orientada a objetos.
+Sistema de gerenciamento de aluguel de veículos desenvolvido em **Java**, aplicando **Programação Orientada a Objetos, princípios SOLID e padrões de projeto**.
 
-## Sobre o Projeto
+## 📌 Sobre o Projeto
 
-O RentFlow é uma aplicação de console para gerenciamento de aluguel de veículos. O sistema permite o cadastro de clientes e veículos, criação de aluguéis, cálculo de tarifas dinâmicas e geração de relatórios financeiros.
+O **RentFlow** é uma aplicação de console para gerenciamento de aluguel de veículos.
 
-## Funcionalidades
+O sistema permite cadastrar clientes e veículos, criar e gerenciar aluguéis, calcular tarifas de acordo com diferentes estratégias, aplicar impostos conforme a região e gerar relatórios financeiros.
 
-- Gestão de clientes com validação de CPF e e-mail.
-- Gestão de veículos por categoria (Econômico, Intermediário e Premium).
-- Criação, finalização e cancelamento de aluguéis.
-- Cálculo de tarifas utilizando diferentes estratégias.
-- Cálculo de impostos (ICMS, PIS, COFINS e Sales Tax).
-- Geração de relatórios financeiros.
-- Validação de dados em tempo real.
+O projeto foi desenvolvido com foco na aplicação prática de conceitos de **Programação Orientada a Objetos**, **polimorfismo**, **injeção de dependência**, **Generics**, **Collections** e **padrões de projeto**.
+
+## 🚀 Funcionalidades
+
+* Cadastro, consulta e remoção de clientes.
+* Cadastro, consulta e remoção de veículos.
+* Organização de veículos por categoria.
+* Verificação de disponibilidade dos veículos.
+* Criação de aluguéis com múltiplos veículos.
+* Finalização e cancelamento de aluguéis.
+* Cálculo de tarifas utilizando diferentes estratégias.
+* Descontos para clientes pessoa jurídica.
+* Aplicação de impostos conforme a região.
+* Processamento de aluguéis no Brasil e nos EUA.
+* Geração de relatórios financeiros.
+* Validação de dados e regras de negócio.
+* Tratamento de exceções personalizadas.
 
 ---
 
-# Arquitetura
+# 🏗️ Arquitetura
 
-O projeto foi desenvolvido seguindo boas práticas de Programação Orientada a Objetos e utilizando padrões de projeto.
+O projeto foi organizado em camadas, separando entidades, regras de negócio, repositórios, estratégias de cálculo e processamento de aluguéis.
 
 ```text
 src/
 ├── aplicacao/
 │   ├── Principal.java
 │   └── Sistema.java
+│
 ├── modelo/
 │   ├── Cliente.java
 │   ├── Veiculo.java
@@ -35,71 +46,328 @@ src/
 │   ├── Categoria.java
 │   ├── StatusAluguel.java
 │   └── TipoCliente.java
+│
 ├── excecoes/
 │   ├── ClienteDuplicadoException.java
 │   ├── VeiculoIndisponivelException.java
 │   └── AluguelInvalidoException.java
+│
 └── servicos/
+    ├── GerenciadorVeiculos.java
+    ├── GeradorRelatorio.java
+    ├── ServicoAluguel.java
+    │
     ├── interfaces/
     │   ├── Repositorio.java
     │   ├── EstrategiaTarifa.java
     │   ├── CalculadoraImposto.java
     │   └── ProcessadorAluguel.java
+    │
     ├── repositorios/
     │   ├── RepositorioClienteMemoria.java
     │   └── RepositorioVeiculoMemoria.java
+    │
     ├── tarifas/
     │   ├── TarifaSimples.java
     │   ├── TarifaPremium.java
     │   └── TarifaProgressiva.java
+    │
     ├── impostos/
     │   ├── ICMS.java
     │   ├── PIS.java
     │   ├── COFINS.java
     │   └── SalesTaxEUA.java
-    ├── processadores/
-    │   ├── ProcessadorAluguelBrasil.java
-    │   └── ProcessadorAluguelEUA.java
-    ├── ServicoAluguel.java
-    └── GeradorRelatorio.java
+    │
+    └── processadores/
+        ├── ProcessadorAluguelBrasil.java
+        └── ProcessadorAluguelEUA.java
 ```
 
-## Padrões de Projeto Utilizados
+---
 
-| Padrão | Aplicação | Benefício |
-|--------|-----------|-----------|
-| Repository | `Repositorio<T>` | Abstração da persistência de dados |
-| Strategy | Tarifas e Impostos | Permite diferentes algoritmos sem alterar o código principal |
-| Enum | Categoria, StatusAluguel e TipoCliente | Tipos seguros e organizados |
-| Generics | `Repositorio<T>` | Reutilização de código |
+# 🧩 Padrões de Projeto
+
+## Strategy Pattern
+
+Utilizado para permitir diferentes formas de cálculo de tarifas e impostos sem alterar a lógica principal do sistema.
+
+### Estratégias de tarifa
+
+* `TarifaSimples`
+* `TarifaPremium`
+* `TarifaProgressiva`
+
+Todas implementam a interface:
+
+```java
+EstrategiaTarifa
+```
+
+Isso permite que o comportamento de cálculo seja alterado de forma flexível.
+
+### Estratégias de impostos
+
+Os impostos também seguem uma abstração comum através da interface:
+
+```java
+CalculadoraImposto
+```
+
+Implementações:
+
+* `ICMS`
+* `PIS`
+* `COFINS`
+* `SalesTaxEUA`
 
 ---
 
-# Tecnologias Utilizadas
+## Repository Pattern
 
-- Java
-- Programação Orientada a Objetos (POO)
-- Collections Framework
-- Exceptions
-- Enums
-- Generics
-- Strategy Pattern
-- Repository Pattern
-- Template Method
+O acesso aos dados é abstraído através da interface genérica:
+
+```java
+Repositorio<T>
+```
+
+Implementações utilizadas:
+
+```text
+RepositorioClienteMemoria
+RepositorioVeiculoMemoria
+```
+
+Os dados são armazenados em memória utilizando `HashMap`.
+
+Essa abordagem permite separar a lógica de negócio da forma como os dados são armazenados.
 
 ---
 
-# Como Executar
+## Factory Pattern
+
+O projeto utiliza uma abordagem de fábrica na classe:
+
+```text
+Principal
+Sistema
+```
+
+para centralizar a criação e configuração dos componentes utilizados pela aplicação.
+
+---
+
+# 🧠 Conceitos de Programação Orientada a Objetos
+
+O projeto aplica diversos conceitos fundamentais de POO:
+
+* Encapsulamento.
+* Abstração.
+* Herança através de implementações de interfaces.
+* Polimorfismo.
+* Interfaces.
+* Composição e associação entre objetos.
+* Enumerações.
+* Generics.
+* Collections.
+* Sobrescrita de métodos.
+
+---
+
+# 🔄 Injeção de Dependência
+
+O `ServicoAluguel` recebe suas dependências através do construtor, em vez de criá-las internamente.
+
+Entre as dependências estão:
+
+```java
+Repositorio<Veiculo>
+Repositorio<Cliente>
+Repositorio<Aluguel>
+ProcessadorAluguel
+EstrategiaTarifa
+```
+
+Isso reduz o acoplamento entre as classes e facilita a substituição das implementações.
+
+Exemplo:
+
+```java
+public ServicoAluguel(
+    Repositorio<Veiculo> repositorioVeiculo,
+    Repositorio<Cliente> repositorioCliente,
+    Repositorio<Aluguel> repositorioAluguel,
+    ProcessadorAluguel processador,
+    List<? extends CalculadoraImposto> impostos,
+    EstrategiaTarifa estrategiaTarifa
+)
+```
+
+---
+
+# 🌎 Processamento por Região
+
+O sistema permite utilizar diferentes regras de processamento de acordo com a região.
+
+```text
+              ProcessadorAluguel
+                      │
+             ┌────────┴────────┐
+             │                 │
+             ▼                 ▼
+ProcessadorAluguelBrasil  ProcessadorAluguelEUA
+             │                 │
+             ▼                 ▼
+     Impostos Brasil       Sales Tax
+```
+
+### Brasil
+
+Utiliza:
+
+* ICMS
+* PIS
+* COFINS
+
+### Estados Unidos
+
+Utiliza:
+
+* Sales Tax
+
+As duas implementações seguem o mesmo contrato definido pela interface:
+
+```java
+ProcessadorAluguel
+```
+
+Isso demonstra o uso de **polimorfismo** para aplicar regras diferentes através da mesma abstração.
+
+---
+
+# 💰 Estratégias de Tarifas
+
+O sistema possui três estratégias de cálculo.
+
+### Tarifa Simples
+
+Calcula o valor com base no preço diário e na quantidade de dias.
+
+```text
+preço diário × quantidade de dias
+```
+
+Clientes pessoa jurídica recebem desconto de 5%.
+
+### Tarifa Premium
+
+Aplica um acréscimo de 50% sobre o valor base.
+
+```text
+preço diário × dias × 1.5
+```
+
+Clientes pessoa jurídica recebem desconto adicional de 5%.
+
+### Tarifa Progressiva
+
+Aplica descontos conforme a duração do aluguel:
+
+| Período   | Desconto |
+| --------- | -------: |
+| 1–3 dias  |       0% |
+| 4–7 dias  |      10% |
+| 8–15 dias |      20% |
+| 16+ dias  |      30% |
+
+Clientes pessoa jurídica recebem mais 5% de desconto.
+
+---
+
+# 🚗 Gerenciamento de Veículos
+
+A classe `GerenciadorVeiculos` é responsável por operações relacionadas à disponibilidade dos veículos.
+
+Entre suas responsabilidades estão:
+
+* Listar veículos disponíveis.
+* Filtrar veículos por categoria.
+* Marcar veículos como disponíveis.
+* Marcar veículos como indisponíveis.
+* Verificar disponibilidade.
+* Agrupar veículos por categoria.
+
+As operações utilizam `Stream API`, `Collections` e `Generics`.
+
+---
+
+# 📊 Relatórios
+
+O sistema possui um `GeradorRelatorio` responsável pela geração de informações relacionadas aos aluguéis.
+
+Os relatórios permitem visualizar informações financeiras e dados dos aluguéis processados.
+
+---
+
+# 🛡️ Exceções Personalizadas
+
+O projeto possui exceções específicas para representar situações de negócio:
+
+```text
+ClienteDuplicadoException
+VeiculoIndisponivelException
+AluguelInvalidoException
+```
+
+Isso permite separar erros de negócio de erros genéricos e tornar o tratamento das situações excepcionais mais organizado.
+
+---
+
+# 🖥️ Menu Principal
+
+A aplicação possui uma interface de console para interação com o usuário.
+
+```text
+1 - Cadastrar veículo
+2 - Cadastrar cliente
+3 - Criar aluguel
+4 - Finalizar aluguel
+5 - Cancelar aluguel
+6 - Listar veículos
+7 - Listar clientes
+8 - Relatórios
+9 - Sair
+```
+
+---
+
+# 🛠️ Tecnologias Utilizadas
+
+* **Java 11+**
+* **Programação Orientada a Objetos**
+* **Collections Framework**
+* **Stream API**
+* **Generics**
+* **Enums**
+* **Interfaces**
+* **Exception Handling**
+* **SOLID**
+* **Strategy Pattern**
+* **Repository Pattern**
+* **Factory Pattern**
+
+---
+
+# ⚙️ Como Executar
 
 ## Pré-requisitos
 
-- Java 11 ou superior
-- IntelliJ IDEA, Eclipse ou VS Code
+* Java 11 ou superior.
+* IntelliJ IDEA, Eclipse ou VS Code.
 
 ## Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/rentflow.git
+git clone https://github.com/Esley-Bertoldo/rentflow.git
 cd rentflow
 ```
 
@@ -117,96 +385,16 @@ java -cp out aplicacao.Principal
 
 ---
 
-# Menu Principal
+# 🎯 Objetivo do Projeto
 
-```text
-1 - Cadastrar veículo
-2 - Cadastrar cliente
-3 - Criar aluguel
-4 - Finalizar aluguel
-5 - Cancelar aluguel
-6 - Listar veículos
-7 - Listar clientes
-8 - Relatórios
-9 - Sair
-```
+O RentFlow foi desenvolvido com o objetivo de praticar e consolidar conhecimentos de **Java e Programação Orientada a Objetos**, aplicando conceitos de arquitetura, padrões de projeto e princípios de desenvolvimento de software em um sistema com regras de negócio reais.
 
 ---
 
-# Estrutura das Entidades
+# 👨‍💻 Autor
 
-## Cliente
+**Esley Bertoldo**
 
-```java
-id: String
-nome: String
-email: String
-cpf: String
-tipoCliente: Enum
-alugueis: Set
-```
+GitHub: [Esley-Bertoldo](https://github.com/Esley-Bertoldo)
 
-## Veículo
-
-```java
-id: String
-marca: String
-modelo: String
-precoDiario: double
-categoria: Enum
-disponivel: boolean
-```
-
-## Aluguel
-
-```java
-id: String
-cliente: Cliente
-dataAluguel: Date
-itens: List
-status: Enum
-valorTotal: double
-```
-
----
-
-# Funcionalidades Técnicas
-
-## Validações
-
-- Validação de e-mail utilizando Expressão Regular.
-- Validação de CPF único.
-- Verificação de disponibilidade do veículo.
-- Validação de datas.
-- Validação de números inteiros e decimais.
-- Tratamento de entradas inválidas.
-
-## Cálculo de Aluguel
-
-```java
-valorTotal = quantidadeDias * precoDiario;
-```
-
-Exemplo:
-
-```text
-3 dias × R$ 50,00 = R$ 150,00
-```
-
-## Exceções Personalizadas
-
-```java
-ClienteDuplicadoException
-VeiculoIndisponivelException
-AluguelInvalidoException
-```
-
----
-
-# Autor
-
-**Seu Nome**
-
-GitHub: https://github.com/Esley-Bertoldo
-
-LinkedIn: https://www.linkedin.com/in/esley-bertoldo
+LinkedIn: [Esley Bertoldo](https://www.linkedin.com/in/esley-bertoldo)
